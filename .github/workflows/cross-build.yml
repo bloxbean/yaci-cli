@@ -1,16 +1,21 @@
 name: Yaci CLI GraalVM native image build
+#on:
+#  push:
+#    tags:
+#      - 'v*'
+
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - ci
 jobs:
   build:
     name: ${{ matrix.version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        version: [ '22.0.0.2']
-        os: [macos-latest,  ubuntu-latest]
+        version: [ '22.2.0']
+        os: [macos-latest,  windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: graalvm/setup-graalvm@v1
@@ -25,10 +30,10 @@ jobs:
         run: |
           export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
           ./gradlew clean build nativeCompile
-        if: runner.os != 'Windows'
+#        if: runner.os != 'Windows'
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: yaci-cli-${{ matrix.os }}-${{ matrix.version }}
+          name: yaci-cli-${{ matrix.os }}-${{ matrix.arch }}
           path: build/native/nativeCompile/yaci-cli
