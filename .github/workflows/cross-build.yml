@@ -14,13 +14,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        version: [ '22.1.0']
-        os: [macos-latest,  windows-latest, ubuntu-latest]
+        version: [ '22.2.0']
+        os: [macos-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.1.0'
+          version: '22.2.0'
           java-version: '11'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -31,11 +31,6 @@ jobs:
           export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
           ./gradlew clean build nativeCompile
         if: runner.os != 'Windows'
-      - name: Build yaci-cli on Windows
-        run: |
-            set JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
-            ./gradlew clean build nativeCompile
-        if: runner.os == 'Windows'
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
