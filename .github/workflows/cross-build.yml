@@ -14,23 +14,28 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        version: [ '22.2.0']
+        version: [ '22.1.0']
         os: [macos-latest,  windows-latest, ubuntu-latest]
     steps:
       - uses: actions/checkout@v2
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: ${{ matrix.version }}
+          version: '22.1.0'
           java-version: '11'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Build shell
+      - name: Build yaci-cli
         run: |
           export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
           ./gradlew clean build nativeCompile
-#        if: runner.os != 'Windows'
+        if: runner.os != 'Windows'
+      - name: Build yaci-cli on Windows
+          run: |
+            export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+            ./gradlew clean build nativeCompile
+          if: runner.os == 'Windows'
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
