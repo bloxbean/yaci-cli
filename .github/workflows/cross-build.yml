@@ -32,10 +32,10 @@ jobs:
           ./gradlew clean build nativeCompile
         if: runner.os != 'Windows'
       - name: Build yaci-cli on Windows
-          run: |
-            export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+        run: |
+            set JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
             ./gradlew clean build nativeCompile
-          if: runner.os == 'Windows'
+        if: runner.os == 'Windows'
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
