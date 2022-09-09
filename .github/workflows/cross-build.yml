@@ -44,5 +44,5 @@ jobs:
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: yaci-cli-${{ binary_os_prefix }}-amd64-${{github.ref_name}}
+          name: yaci-cli-${binary_os_prefix}-amd64-${{github.ref_name}}
           path: build/native/nativeCompile/yaci-cli
