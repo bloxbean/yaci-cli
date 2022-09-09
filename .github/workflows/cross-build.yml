@@ -77,10 +77,12 @@ jobs:
 #        with:
 #          name: yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
 #          path: build/native/nativeCompile/yaci-cli
+      - name: Rename output file
+        run: mv build/native/nativeCompile/yaci-cli build/native/nativeCompile/yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          name: yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
-          path: build/native/nativeCompile/yaci-cli
+          files: |
+            build/native/nativeCompile/yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
           prerelease: true
