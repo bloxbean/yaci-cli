@@ -31,9 +31,16 @@ jobs:
           export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
           ./gradlew clean build nativeCompile
         if: runner.os != 'Windows'
-
+      - name: Binary name
+        if: startsWith(matrix.os, 'ubuntu')
+        env:
+          binary_os_prefix: 'linux'
+      - name: Binary name
+        if: startsWith(matrix.os-name, 'mac')
+        env:
+          binary_os_prefix: 'darwin'
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: yaci-cli-${{ matrix.os }}-${{ matrix.arch }}
+          name: yaci-cli-${{ binary_os_prefix }}-amd64-${{github.ref_name}}
           path: build/native/nativeCompile/yaci-cli
