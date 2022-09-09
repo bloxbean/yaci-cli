@@ -16,6 +16,11 @@ jobs:
       matrix:
         version: [ '22.2.0']
         os: [macos-latest, ubuntu-latest]
+        include:
+          - os: 'macos-latest'
+            label: 'mac'
+          - os: 'ubuntu-latest'
+            label: 'linux'
     steps:
       - uses: actions/checkout@v2
       - uses: graalvm/setup-graalvm@v1
@@ -31,18 +36,11 @@ jobs:
           export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
           ./gradlew clean build nativeCompile
         if: runner.os != 'Windows'
-      - name: Binary name
-        if: startsWith(matrix.os, 'ubuntu')
-        run: echo "Ubuntu"
-        env:
-          binary_os_prefix: 'linux'
-      - name: Binary name
-        if: startsWith(matrix.os-name, 'mac')
-        run: echo "Mac"
-        env:
-          binary_os_prefix: 'darwin'
+      - name: 'Get Version Number'
+        run: |
+          echo "::set-env name=VERSION::$(./gradlew properties -q | grep "version:" | awk '{print $2}')"
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
-          name: yaci-cli-${{env.binary_os_prefix}}-amd64-${{github.ref_name}}
+          name: yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
           path: build/native/nativeCompile/yaci-cli
