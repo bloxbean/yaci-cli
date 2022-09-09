@@ -48,3 +48,10 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+if (isReleaseVersion && !project.hasProperty("skipSigning")) {
+	signing {
+		configurations.archives
+	}
+}
