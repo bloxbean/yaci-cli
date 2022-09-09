@@ -38,7 +38,7 @@ jobs:
         if: runner.os != 'Windows'
       - name: 'Get Version Number'
         run: |
-          ARTIFACT_VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')"
+          ARTIFACT_VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
           echo "VERSION=${ARTIFACT_VERSION}" >> $GITHUB_ENV
       - name: Upload binary
         uses: actions/upload-artifact@v2
