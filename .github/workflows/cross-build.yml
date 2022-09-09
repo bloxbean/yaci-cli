@@ -22,12 +22,16 @@ jobs:
         run: chmod +x gradlew
       - name: Build with Gradle
         run: ./gradlew clean build -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} -Psigning.password=${{ secrets.SIGNING_PASSWORD }} -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg) --warn --stacktrace
+      - name: 'Get Version Number'
+        run: |
+          ARTIFACT_VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
+          echo "VERSION=${ARTIFACT_VERSION}" >> $GITHUB_ENV
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            build/libs/yaci*-?.?.?.jar
+            build/libs/yaci*-${{env.VERSION}}.jar
           prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -68,11 +72,11 @@ jobs:
         run: |
           ARTIFACT_VERSION=$(./gradlew properties -q | grep "version:" | awk '{print $2}')
           echo "VERSION=${ARTIFACT_VERSION}" >> $GITHUB_ENV
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
-          path: build/native/nativeCompile/yaci-cli
+#      - name: Upload binary
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: yaci-cli-${{matrix.label}}-amd64-${{env.VERSION}}
+#          path: build/native/nativeCompile/yaci-cli
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
