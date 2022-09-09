@@ -3,6 +3,7 @@ plugins {
 	id 'org.springframework.experimental.aot' version '0.12.1'
 	id 'io.spring.dependency-management' version '1.0.13.RELEASE'
 	id 'java'
+	id 'signing'
 }
 
 configurations {
@@ -52,6 +53,6 @@ tasks.named('test') {
 ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 if (isReleaseVersion && !project.hasProperty("skipSigning")) {
 	signing {
-		configurations.archives
+		sign configurations.archives
 	}
 }
