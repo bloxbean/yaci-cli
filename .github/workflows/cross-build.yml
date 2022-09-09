@@ -29,12 +29,17 @@ jobs:
           java-version: '11'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Decode GPG Key
+        run: |
+          mkdir -p ~/.gradle/
+          echo "${{secrets.SIGNING_KEY}}" > ~/.gradle/secring.gpg.b64
+          base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build yaci-cli
         run: |
           export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
-          ./gradlew clean build nativeCompile
+          ./gradlew clean build nativeCompile -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} -Psigning.password=${{ secrets.SIGNING_PASSWORD }} -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg) --warn --stacktrace
         if: runner.os != 'Windows'
       - name: 'Get Version Number'
         run: |

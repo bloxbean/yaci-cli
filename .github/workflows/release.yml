@@ -15,10 +15,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      - name: Decode GPG Key
+          run: |
+            mkdir -p ~/.gradle/
+            echo "${{secrets.SIGNING_KEY}}" > ~/.gradle/secring.gpg.b64
+            base64 -d ~/.gradle/secring.gpg.b64 > ~/.gradle/secring.gpg
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew clean build
+        run: ./gradlew clean build -Psigning.keyId=${{ secrets.SIGNING_KEY_ID }} -Psigning.password=${{ secrets.SIGNING_PASSWORD }} -Psigning.secretKeyRingFile=$(echo ~/.gradle/secring.gpg) --warn --stacktrace
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
