@@ -1,3 +1,5 @@
+# Yaci CLI codebase is now part of the Yaci DevKit repository (https://github.com/bloxbean/yaci-devkit)
+
 # yaci-cli
 A CLI tool aims to help developers building on Cardano. 
 
